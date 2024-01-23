@@ -1,6 +1,4 @@
 import Game from "./game/game.js";
-import Background from "./game/background/background.js";
-import TitleScreen from "./game/titleScreen.js";
 
 window.onload = function () {
   const gameCanvas = document.getElementById('canvas-game')
