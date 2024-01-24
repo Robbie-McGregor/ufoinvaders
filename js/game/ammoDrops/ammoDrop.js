@@ -1,12 +1,10 @@
-import Sprite from "../assets/asset_classes/sprite.js";
+import Sprite from "../assets/sprite.js";
 import {images} from "../util/images.js";
 import WeaponHandler from "../weapons/weaponHandler.js";
 
 
 class AmmoDrop extends Sprite{
-  static AmmoTypes = {
 
-  }
   constructor(position, game) {
     super({
       image: images.ammoBox,
@@ -78,6 +76,7 @@ export class LaserAmmo extends AmmoDrop{
 }
 
 export class Health extends AmmoDrop{
+  static ammoType = "HEALTH"
   constructor(position, game) {
     super(position, game);
     this.ammoImage = images.heart
@@ -85,7 +84,7 @@ export class Health extends AmmoDrop{
       width: 0.6,
       height: 0.6
     }
-    this.ammoType = "HEALTH"
+    this.ammoType = Health.ammoType
     this.ammoQty = 1
   }
 }

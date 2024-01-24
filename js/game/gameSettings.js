@@ -1,27 +1,7 @@
 import {images} from "./util/images.js";
 
-export const defaultState = {
-    level : 1,
-    score : 0,
-    paused: false,
-    levelStartSpeed: 0.25,
-    enemySpeed: 0.5,
-    gameOver: false,
-    highScore: localStorage.getItem("highScore"),
-    newHighScore: false,
-    playerAmmo: {
-        bigMissiles: 5,
-        nukes: 3,
-        laser: 750
-    },
-    lives: 3,
-    playerWidth: null
-}
 
 export const settings = {
-    // developmentMode: true,
-    // stationaryEnemies: true,
-    // enemiesNoFire: true,
     specialEnemySpeed: 0.5,
     enemyMoveDownIncrement: 15,
     specialEnemyWhenNumberOfEnemiesLeftEquals: 6,
@@ -31,7 +11,6 @@ export const settings = {
     playerMaxLives: 3,
     maxOnscreenEnemyBullets: 5,
     maxOnscreenEnemyMines: 3,
-    // maxOnscreenEnemyBullets: 0,
     enemyShootBulletChance: .0075,
     enemyBulletSpeed: 0.3,
     shootEnemyBulletPoints: 25,
@@ -40,7 +19,6 @@ export const settings = {
     enemiesShootLasersHealthLevelOnwards: 3,
     enemiesShootLaserChance: 0.0075 / 4,
     maxLasersOnScreen: 2,
-    // maxLasersOnScreen: 0,
     ammoDropChance: 0.1,
     nukeDropChance: 0.33,
     laserDropChange: 0.33,

@@ -1,18 +1,19 @@
 import {images} from "../util/images.js";
+import Sprite from "../assets/sprite.js";
 
-export default class Laser{
-  constructor({position, enemy}){
-    this.width = 240
-    this.height = 500
-    this.hitDuration = 1800
-    this.damageDealt = 0.1
+export default class Laser extends Sprite{
+  constructor({position, game}){
+    super({
+      position,
+      image: images.laser,
+      size: {
+        width: 240,
+        height: 0
+      }
+    })
+    this.game = game
     this.hitWidth = 7
-    this.enemy = enemy
     this.hitHeight = this.height * 2
-    this.position = position
-    this.image = images.laser
-    this.offSetX = 0
-    this.offSetY = 0
     this.imageX = 2048 / 4
     this.imageY = 2048 / 3
     this.imageOffsets = [
@@ -29,17 +30,13 @@ export default class Laser{
       [this.imageX, 0],
       [0,0],
     ]
+    this.growSpeed = 30
     this.currentFrame = 0
     this.frameChangeDelay = 15
     this.currentImageOffset = 11
-    this.completed = false
-    // this.distanceToGrow = canvas.height - position.y
-
   }
 
   draw(context){
-    // if(settings.developmentMode) this.showHitBox()
-
     context.drawImage(
       this.image,
       this.imageOffsets[this.currentImageOffset][0],
@@ -56,38 +53,20 @@ export default class Laser{
   update(deltaTime){
 
     this.currentFrame += 1
-    if(this.currentFrame % this.frameChangeDelay != 0) return
-
-    // this.height += 40
-    this.height += (this.distanceToGrow) / 15
+    if(this.currentFrame % this.frameChangeDelay !== 0) return
+    if(this.currentImageOffset === this.imageOffsets.length - 1) this.currentImageOffset = 0
+    else this.currentImageOffset += 1
 
     this.hitHeight = this.height * 2
-
-
-    if(this.currentImageOffset == this.imageOffsets.length - 1) this.currentImageOffset = 0
-    else this.currentImageOffset += 1
 
   }
 
 
   animate(context){
     this.currentFrame += 1
-    if(this.currentFrame % this.frameChangeDelay != 0) return
+    if(this.currentFrame % this.frameChangeDelay !== 0) return
 
-
-    if(this.currentImageOffset == this.imageOffsets.length - 1) this.currentImageOffset = 0
+    if(this.currentImageOffset === this.imageOffsets.length - 1) this.currentImageOffset = 0
     else this.currentImageOffset += 1
   }
-
-
-  showHitBox(){
-    this.context.beginPath()
-    this.context.strokeStyle='white'
-    this.context.rect(this.position.x - this.hitWidth / 2, this.position.y - this.hitHeight / 2, this.hitWidth, this.hitHeight)
-
-    this.context.stroke()
-  }
-
-
-
 }

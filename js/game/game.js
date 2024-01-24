@@ -1,7 +1,7 @@
 import Background from "./screens/background.js";
 import {InputHandler} from "./input.js";
 import ScreenHandler from "./screens/screenHandler.js";
-import Player from "./assets/asset_classes/player.js";
+import Player from "./assets/player.js";
 import LevelHandler from "./levels/levelHandler.js";
 import EnemyHandler from "./enemies/enemyHandler.js";
 import WeaponHandler from "./weapons/weaponHandler.js";
@@ -11,7 +11,6 @@ import AmmoDropHandler from "./ammoDrops/ammoDropHandler.js";
 
 export default class Game{
   constructor(gameContentCanvas) {
-    this.canvas = gameContentCanvas
     this.width = gameContentCanvas.width
     this.height = gameContentCanvas.height
     this.background = new Background(this)
@@ -37,11 +36,7 @@ export default class Game{
   startGame(){
     this.state.paused = false
     this.screen.setCurrentScreen(this.screen.screens.gameScreen)
-    this.level.setCurrentLevel(0)
-
-    setTimeout(() => {
-    this.enemies.setEnemySpeed(0.5)
-    }, 500)
+    this.level.setCurrentLevel(5)
   }
 
   update(deltaTime){

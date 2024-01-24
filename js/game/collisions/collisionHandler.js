@@ -1,4 +1,5 @@
 import Explosion from "./explosion.js";
+import {Health} from "../ammoDrops/ammoDrop.js";
 
 export default class CollisionHandler{
   constructor(game) {
@@ -8,8 +9,14 @@ export default class CollisionHandler{
 
 
   update(deltaTime){
-    this.missileEnemyCollisions()
-    this.missileAmmoDropCollisions()
+    this.playerMissileToEnemyCollisions()
+    this.ammoDropCollisions()
+    this.playerEnemyCollisions()
+    this.playerMissileToEnemyMissileCollisions()
+    this.playerLaserToEnemyCollisions(deltaTime)
+    this.enemyMissileToPlayerCollisions()
+    this.enemyLaserToPlayerCollisions()
+
 
     this.explosionArray.forEach(explosion => explosion.update(deltaTime))
     this.explosionArray.filter(explosion => !explosion.markedForDeletion)
@@ -23,33 +30,118 @@ export default class CollisionHandler{
     this.explosionArray.forEach(explosion => explosion.animate(deltaTime))
   }
 
-  missileEnemyCollisions(){
+  playerMissileToEnemyCollisions(){
     this.game.weapons.missileArray.forEach(missile => {
       this.game.enemies.enemyArray.forEach(enemy => {
         if(this.collisionCheckRectangular({object1: missile, object2: enemy})){
+          const enemyLaser = this.game.weapons.enemyLaserArray.find(laser => laser.enemy === enemy)
+          if(enemyLaser) enemyLaser.markedForDeletion = true
+
           missile.health -= 1
+          if(missile.health === 0) missile.markedForDeletion = true
           enemy.health -= 1
           if(enemy.health <= 0) {
             this.explosionArray.push(new Explosion({...enemy.position}, 2))
             if(Math.random() < 0.1) this.game.ammoDrops.addAmmoDrop({...enemy.position})
           }
-          else if(missile.health <= 0) missile.explode()
+          if(missile.health <= 0 && missile.explosionSize > 2) missile.explode()
         }
       })
     })
   }
 
-  missileAmmoDropCollisions(){
+  playerMissileToEnemyMissileCollisions(){
     this.game.weapons.missileArray.forEach(missile => {
-      this.game.ammoDrops.ammoDropArray.forEach(ammoDrop => {
-        if(this.collisionCheckRectangular({object1: missile, object2: ammoDrop})){
-            this.explosionArray.push(new Explosion({...ammoDrop.position}, 1))
-            ammoDrop.markedForDeletion = true
-          }
+      this.game.weapons.enemyMissileArray.forEach(enemyMissile => {
+        if(this.collisionCheckRectangular({
+          object1: missile,
+          object2: enemyMissile
+        })){
+          missile.health -= 1
+          enemyMissile.explode()
+          enemyMissile.playExplosion()
+          enemyMissile.health -= 1
+          setTimeout(() => {
+            this.game.ammoDrops.addAmmoDrop({...enemyMissile.position})
+          }, 100)
+
+        }
       })
     })
   }
 
+  playerLaserToEnemyCollisions(deltaTime){
+    const bottomRowEnemies = this.game.enemies.getBottomRowEnemies()
+
+    bottomRowEnemies.forEach(enemy => {
+      if(this.collisionCheckRectangular({
+        object1: enemy,
+        object2: this.game.weapons.playerLaser
+      })){
+        const enemyLaser = this.game.weapons.enemyLaserArray.find(laser => laser.enemy === enemy)
+        if(enemyLaser) enemyLaser.markedForDeletion = true
+
+        enemy.takeLaserDamage(this.game.weapons.playerLaser.damageDealt * deltaTime)
+        this.game.weapons.playerLaser.height = -(enemy.position.y - this.game.player.position.y)
+      }
+    })
+  }
+
+  enemyMissileToPlayerCollisions(){
+    if(this.game.player.invincibility) return
+    this.game.weapons.enemyMissileArray.forEach(missile => {
+      if(this.collisionCheckRectangular({
+        object1: missile,
+        object2: this.game.player
+      })){
+        missile.health -= 1
+        this.game.player.playHit()
+        this.game.player.health -= 1
+        this.game.player.invincibilityFrames()
+      }
+    })
+  }
+
+  enemyLaserToPlayerCollisions(){
+    if(this.game.player.invincibility) return
+    this.game.weapons.enemyLaserArray.forEach(laser => {
+      if(this.collisionCheckRectangular({
+        object1: laser,
+        object2: this.game.player
+      })){
+        this.game.player.playHit()
+        this.game.player.health -= 1
+        this.game.player.invincibilityFrames()
+      }
+    })
+  }
+
+  ammoDropCollisions(){
+    this.game.ammoDrops.ammoDropArray.forEach(ammoDrop => {
+      if(ammoDrop.ammoType === Health.ammoType && this.game.player.health >= this.game.player.maxHealth) return;
+      if(this.collisionCheckRectangular({object1: this.game.player, object2: ammoDrop})) {
+        ammoDrop.markedForDeletion = true
+        return
+      }
+
+      this.game.weapons.missileArray.forEach(missile => {
+        if(this.collisionCheckRectangular({object1: missile, object2: ammoDrop})){
+          this.explosionArray.push(new Explosion({...ammoDrop.position}, 1))
+          ammoDrop.markedForDeletion = true
+        }
+      })
+    })
+  }
+
+
+  playerEnemyCollisions(){
+    this.game.enemies.enemyArray.forEach(enemy => {
+      if(this.collisionCheckRectangular({object1: this.game.player, object2: enemy})) {
+        enemy.health = 0
+        this.game.player.health -= 1
+      }
+    })
+  }
 
 
 
@@ -74,6 +166,8 @@ export default class CollisionHandler{
       object1Extents.right > object2Extents.left;
 
   }
+
+
 
 
   collisionCheckCircular({object1, object2}){

@@ -12,12 +12,22 @@ export default class LevelHandler {
   update(){
     if(!this.currentLevel) return
     this.currentLevel.update()
+    if(this.currentLevel.levelComplete){
+      console.log(this.currentLevel)
+      this.setCurrentLevel(this.currentLevel.level)
+    }
   }
 
   setCurrentLevel(level) {
+    this.game.enemies.setEnemySpeed(0)
     this.currentLevel = undefined
     this.currentLevel = new Level(levels[level])
     this.currentLevel.enemies.forEach(enemy => this.game.enemies.enemyArray.push(enemy))
+
+    setTimeout(() => {
+      this.game.enemies.setEnemySpeed(0.5)
+    }, 500)
+
   }
 
 
@@ -31,6 +41,7 @@ class Level{
     this.config = config
     this.enemies = []
     this.level = config.level
+    this.levelComplete = false
 
     this.addEnemies()
   }
@@ -38,6 +49,8 @@ class Level{
   addEnemies(){
     for(let i = 0; i < this.config.enemies.length; i++){
       for(let j = 0; j < this.config.enemies[i].length; j++){
+        if(this.config.enemies[i][j]){
+
           const enemyType = this.config.enemies[i][j]
           let xPositionOffset = enemySetup.enemyStartPosition.x + enemySetup.enemySpacing.x * j
           const yPositionOffset = enemySetup.enemyStartPosition.y + enemySetup.enemySpacing.y * i
@@ -59,10 +72,13 @@ class Level{
           )
         }
       }
+
+    }
   }
 
   update(){
     this.enemies = this.enemies.filter(enemy => !enemy.markedForDeletion)
+    if(this.enemies.length === 0) this.levelComplete = true
   }
 }
 

@@ -9,6 +9,7 @@ export default class AmmoDropHandler{
       nukeAmmo: NukeAmmo,
       laserAmmo: LaserAmmo,
     }
+    this.healthChance = 0.075
 
     this.ammoDropArray = []
   }
@@ -18,7 +19,7 @@ export default class AmmoDropHandler{
       ammoDrop.update(deltaTime)
       if(ammoDrop.markedForDeletion) {
         ammoDrop.playSound()
-        if(ammoDrop.ammoType === this.game.state.playerLives) this.game.state.playerLives += 1
+        if(ammoDrop.ammoType === Health.ammoType) this.game.player.health += 1
         else this.game.weapons.playerAmmo[ammoDrop.ammoType] += ammoDrop.ammoQty
       }
     })
@@ -29,13 +30,19 @@ export default class AmmoDropHandler{
     this.ammoDropArray.forEach(ammoDrop => ammoDrop.draw(context))
   }
 
-  addAmmoDrop(position, health = false){
-    if(health) this.ammoDropArray.push(new Health(position))
+  addAmmoDrop(position){
+    if(this.game.player.health === 0) this.healthChance = .25
+    else this.healthChance = 0.075
+
+
+    if(Math.random() < this.healthChance && this.game.player.health < this.game.player.maxHealth) {
+      this.ammoDropArray.push(new Health(position))
+    }
     else {
       const ammoDropType = this.randomAmmoType()
       setTimeout(() => {
         this.ammoDropArray.push(new ammoDropType(position, this.game))
-      }, 500)
+      }, 100)
 
     }
 

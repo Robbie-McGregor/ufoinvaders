@@ -13,26 +13,17 @@ export default class Overlay{
         }
 
         this.font = "Arial"
-        this.fontSize = "12.5px"
-        this.globalAlpha = 1
-
-        this.highlightBigAmmo = false
-        this.highlightNuke = false
-        this.highlightLives = false
     }
 
     draw(context){
-        context.globalAlpha = this.globalAlpha
         this.setFont(context)
         this.drawBigMissileAmmo(context)
         this.drawNukeAmmo(context)
         this.drawMissileAmmo(context)
         this.drawLaserAmmo(context)
-        this.drawLives(context)
+        this.drawHealth(context)
         this.drawScore(context)
         this.drawCurrentLevel(context)
-        context.globalAlpha = 1
-        this.overlayTimeout = 2500
     }
 
     setFont(context){
@@ -43,8 +34,6 @@ export default class Overlay{
     }
 
     drawBigMissileAmmo(context){
-        if(this.highlightBigAmmo) context.globalAlpha = 1
-
         const imageWidth = 90
         const imageHeight = 40
         const y = 30
@@ -53,13 +42,9 @@ export default class Overlay{
         context.drawImage(this.images.missile, imageX -  imageWidth /2, y - imageHeight / 2, imageWidth, imageHeight)
         context.fillText(this.game.weapons.playerAmmo.BIG_MISSILES, textX, y);
         context.fillText("Z", 155, y);
-
-        context.globalAlpha = this.globalAlpha
     }
 
     drawNukeAmmo(context){
-        if(this.highlightNuke) context.globalAlpha = 1
-
         const imageWidth = 75
         const imageHeight = 75
         const y = 85
@@ -68,8 +53,6 @@ export default class Overlay{
         context.drawImage(this.images.nuke, imageX -  imageWidth /2, y - imageHeight / 2, imageWidth, imageHeight)
         context.fillText(this.game.weapons.playerAmmo.NUKES, textX, y);
         context.fillText("X", 155, y);
-
-        context.globalAlpha = this.globalAlpha
     }
 
 
@@ -86,22 +69,15 @@ export default class Overlay{
         context.fillText("SPACE", 155, y);
     }
 
-    drawLives(context){
+    drawHealth(context){
         const imageWidth = 100
         const imageHeight = 100
         let y = imageHeight / 2 + 5
         const x = this.game.width - imageWidth / 2 -5
-        for(let i = 0; i < this.game.player.lives; i++){
-
-            if(this.highlightLives && i === this.game.state.playerLives - 1) context.globalAlpha = 1
-
+        for(let i = 0; i < this.game.player.health; i++){
             context.drawImage(this.images.player, x -  imageWidth /2, y - imageHeight / 2, imageWidth, imageHeight)
-
             y += imageHeight + 5
-
-            context.globalAlpha = this.globalAlpha
         }
-
     }
 
     drawScore(context){
@@ -123,8 +99,6 @@ export default class Overlay{
     }
 
     drawLaserAmmo(context){
-        if(this.highlightLaser) context.globalAlpha = 1
-
         const imageWidth = 85
         const imageHeight = 35
         const y = 140
@@ -133,39 +107,7 @@ export default class Overlay{
         context.drawImage(this.images.laser, imageX -  imageWidth /2, y - imageHeight / 2, imageWidth, imageHeight)
         context.fillText(`${Math.floor(this.game.weapons.playerAmmo.LASER / 10)}`, textX, y + 2);
         context.fillText("C", 155, y);
-
-        context.globalAlpha = this.globalAlpha
     }
 
-
-    setHighlightBigMissile(context){
-        this.highlightBigAmmo = true
-        setTimeout(() => {
-            this.highlightBigAmmo = false
-        }, this.overlayTimeout)
-    }
-
-
-    setHighlightNuke(context){
-        this.highlightNuke = true
-        setTimeout(() => {
-            this.highlightNuke = false
-        }, this.overlayTimeout)
-    }
-
-    setHighlightLaser(context){
-        this.highlightLaser = true
-        setTimeout(() => {
-            this.highlightLaser = false
-        }, this.overlayTimeout)
-    }
-
-
-    setHighlightLives(context){
-        this.highlightLives = true
-        setTimeout(() => {
-            this.highlightLives = false
-        }, this.overlayTimeout)
-    }
 
 }

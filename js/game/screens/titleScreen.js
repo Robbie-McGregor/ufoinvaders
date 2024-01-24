@@ -1,9 +1,8 @@
-import {images} from "../util/images.js";
-import Laser from "../weapons/laser.js";
+import Laser from "../weapons/enemyWeapons/enemyLaser.js";
 import Screen from "./screen.js";
 import Enemy from "../enemies/enemy.js";
 import {enemySetup} from "../gameSettings.js";
-import {Missile} from "../weapons/projectile.js";
+import Missile from "../weapons/playerWeapons/missile.js";
 
 export default class TitleScreen extends Screen{
     constructor(game) {
@@ -55,6 +54,9 @@ export default class TitleScreen extends Screen{
 
       const laser1 =  new Laser({position: enemy2.position, enemy: enemy2 })
       const laser2 =  new Laser({position: enemy3.position, enemy: enemy3 })
+
+      laser1.height = 500
+      laser2.height = 500
 
       const missile = new Missile({x: this.game.width / 2, y: 500})
       return [

@@ -27,6 +27,3 @@ export default class ScreenHandler{
     this.currentScreen.animate(deltaTime)
   }
 }
-
-
-

@@ -21,13 +21,4 @@ export default class Sprite{
 
   }
 
-  drawHitBox(context){
-    context.beginPath()
-    context.strokeStyle='white'
-    context.rect(this.position.x - this.hitWidth / 2, this.position.y - this.hitHeight / 2, this.hitWidth, this.hitHeight)
-    context.arc(this.position.x, this.position.y, this.radius , 0, 2 * Math.PI);
-    context.stroke()
-  }
-
-
 }

@@ -1,8 +1,8 @@
-import {images} from "../../util/images.js";
-import {settings} from "../../gameSettings.js";
+import {images} from "../util/images.js";
+import {settings} from "../gameSettings.js";
 import Sprite from "./sprite.js";
 
-export default class extends Sprite{
+export default class Player extends Sprite{
     constructor(game, position){
       super({
         image: images.player,
@@ -13,10 +13,11 @@ export default class extends Sprite{
         position
       })
       this.game = game
-      this.image = images.player
+      this.regularImage = images.player
       this.ghostImage = images.playerOverlay
       this.isAlive = true
-      this.lives = 3
+      this.health = 3
+      this.maxHealth = 5
       this.radius = this.width/2.25
       this.hitWidth = this.width * 0.9
       this.hitHeight = this.height * 0.9
@@ -24,7 +25,6 @@ export default class extends Sprite{
       this.maxSpeed = 1
       this.accelerationRate = settings.accelerationRate
       this.invincibility = false
-      this.canFireMissile = true
     }
 
 
@@ -41,12 +41,23 @@ export default class extends Sprite{
           return
       }
       this.applyScreenExtents()
+     }
 
+     playHit(){
+      const audio = new Audio('audio/DeathFlash.flac')
+       audio.play()
+     }
+
+
+     draw(context){
+      super.draw(context)
+       if(this.invincibility) this.image = this.ghostImage
+       else this.image = this.regularImage
      }
 
     applyScreenExtents(){
       if(this.position.x > this.game.width - this.width / 2) this.position.x = this.game.width - this.width / 2
-      if(this.position.x < 0 + this.width / 2) this.position.x = 0 + this.width / 2
+      if(this.position.x < this.width / 2) this.position.x = this.width / 2
 
     }
 
@@ -73,7 +84,7 @@ export default class extends Sprite{
     invincibilityFrames(){
         this.invincibility = true
         setTimeout(() => {
-            this.invincibility =false
+            this.invincibility = false
         }, 1500)
     }
 

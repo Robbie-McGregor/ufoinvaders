@@ -30,6 +30,8 @@ export class InputHandler{
 
       const code = evt.code
 
+      if(code === this.keyMap.pause) this.game.state.paused = !this.game.state.paused
+
       // GENERAL INPUT
       for(const key in this.keyMap){
         if(this.keyMap[key] === evt.code && !this.currentKeys.includes(code)) this.currentKeys.unshift(evt.code)

@@ -1,21 +1,30 @@
 import {settings} from "../gameSettings.js";
-import Explosion from "../collisions/explosion.js";
 
 export default class EnemyHandler{
+
   constructor(game) {
     this.game = game
 
     this.enemySpeed = 0
     this.enemyArray = []
+
   }
 
   update(deltaTime){
     this.handleDirectionChange(deltaTime)
     this.enemyArray.forEach(enemy => {
       enemy.update(deltaTime)
+      if(enemy.markedForDeletion) {
+        this.game.state.score += enemy.points
+        this.playEnemyDeathSound()
+      }
     })
     this.enemyArray = this.enemyArray.filter(enemy => !enemy.markedForDeletion)
+  }
 
+  playEnemyDeathSound(){
+    const audio = new Audio('audio/DeathFlash.flac')
+    audio.play()
   }
 
   draw(context){
@@ -26,6 +35,7 @@ export default class EnemyHandler{
     this.enemySpeed = speed
     this.enemyArray.forEach(enemy => enemy.velocity.x = speed)
   }
+
 
   handleDirectionChange(){
     if(this.enemyArray.length < 1) return
@@ -85,6 +95,8 @@ export default class EnemyHandler{
 
 
 
+
+
   // Find the enemy at the very left and very right of the enemies
   getEnemyExtents(){
     if(this.enemyArray.length < 1) return
@@ -93,5 +105,32 @@ export default class EnemyHandler{
     const rightEnemy = this.enemyArray.reduce((prev, curr) => prev.position.x > curr.position.x ? prev : curr)
 
     return {leftEnemy, rightEnemy}
+  }
+
+  getTopRowEnemies(){
+    const topRowEnemies = []
+    this.enemyArray.forEach(enemy => {
+      let enemyAboveThis = false
+
+      this.enemyArray.forEach(otherEnemy => {
+        if(enemy.position.x === otherEnemy.position.x && enemy.position.y > otherEnemy.position.y) enemyAboveThis = true
+      })
+      if(!enemyAboveThis) topRowEnemies.push(enemy)
+    })
+
+    return topRowEnemies
+  }
+
+  getBottomRowEnemies(){
+    const bottomRowEnemies = []
+    this.enemyArray.forEach(enemy => {
+      let enemyAboveThis = false
+
+      this.enemyArray.forEach(otherEnemy => {
+        if(enemy.position.x === otherEnemy.position.x && enemy.position.y < otherEnemy.position.y) enemyAboveThis = true
+      })
+      if(!enemyAboveThis) bottomRowEnemies.push(enemy)
+    })
+    return bottomRowEnemies
   }
 }

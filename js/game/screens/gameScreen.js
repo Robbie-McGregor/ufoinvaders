@@ -9,21 +9,26 @@ export default class GameScreen extends Screen{
 
   update(deltaTime){
     super.update(deltaTime)
+
+    if(this.game.state.paused) return
+
     this.game.collisions.update(deltaTime)
     this.game.player.update(deltaTime)
     this.game.weapons.update(deltaTime)
-    this.game.enemies.update(deltaTime)
     this.game.ammoDrops.update(deltaTime)
+    this.game.enemies.update(deltaTime)
   }
 
   draw(context){
     super.draw(context)
     this.overlay.draw(context)
     this.game.collisions.draw(context)
-    this.game.weapons.draw(context)
-    this.game.player.draw(context)
-    this.game.enemies.draw(context)
     this.game.ammoDrops.draw(context)
+    this.game.weapons.draw(context)
+    this.game.enemies.draw(context)
+
+    this.game.player.draw(context)
+
   }
 
   animate(deltaTime) {

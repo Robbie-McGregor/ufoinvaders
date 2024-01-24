@@ -1,4 +1,4 @@
-import Sprite from "../assets/asset_classes/sprite.js";
+import Sprite from "../assets/sprite.js";
 import {images} from "../util/images.js";
 
 export default class Explosion extends Sprite{
