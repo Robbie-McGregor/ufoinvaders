@@ -19,7 +19,7 @@ export default class EnemyLaser extends Laser{
     if(this.enemy.markedForDeletion) this.markedForDeletion = true
 
     if(this.height < this.game.height - this.position.y){
-      this.height += (this.distanceToGrow) / (this.growSpeed * deltaTime)
+      this.height += (this.distanceToGrow / this.growSpeed) * deltaTime
     } else {
       setTimeout(() => {
         this.markedForDeletion = true

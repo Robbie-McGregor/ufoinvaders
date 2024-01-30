@@ -1,4 +1,4 @@
-import Sprite from "../assets/sprite.js";
+import Sprite from "../sprite.js";
 import {images} from "../util/images.js";
 import WeaponHandler from "../weapons/weaponHandler.js";
 
@@ -19,12 +19,7 @@ class AmmoDrop extends Sprite{
       x: 0,
       y: 0.1
     }
-    this.audio = new Audio('audio/ammo.wav');
-  }
-
-  playSound(){
-    this.audio.currentTime = 0
-    this.audio.play()
+    this.audio = 'audio/ammo.wav'
   }
 
   draw(context) {
@@ -70,7 +65,7 @@ export class LaserAmmo extends AmmoDrop{
       width: 0.8,
       height: 0.8
     }
-    this.ammoQty = 750
+    this.ammoQty = 250
     this.ammoType = WeaponHandler.AMMO_TYPES.LASER
   }
 }

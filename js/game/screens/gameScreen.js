@@ -5,6 +5,7 @@ export default class GameScreen extends Screen{
   constructor(game) {
     super(game)
     this.overlay = new Overlay(game)
+
   }
 
   update(deltaTime){
@@ -26,7 +27,6 @@ export default class GameScreen extends Screen{
     this.game.ammoDrops.draw(context)
     this.game.weapons.draw(context)
     this.game.enemies.draw(context)
-
     this.game.player.draw(context)
 
   }

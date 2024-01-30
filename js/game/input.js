@@ -1,5 +1,5 @@
 
-export class InputHandler{
+export default class InputHandler{
   constructor(game) {
     this.game = game
     this.keyMap = {

@@ -14,21 +14,24 @@ export default class TitleScreen extends Screen{
       this.lowerTextPosition = 1000
       this.lowerText = "PRESS ENTER TO PLAY"
 
+      this.font = "Staatliches"
+      this.fontColor = "rgb(241,241,241)";
+
       this.alienYPosition = 325
 
       this.sprites = [this.makeSprites()]
     }
 
   drawTitle(context){
-    context.font = "150px Staatliches";
-    context.fillStyle = "rgb(197,255,172)";
+    context.font = `150px ${this.font}`;
+    context.fillStyle = this.fontColor
     context.textAlign = 'center'
     context.textBaseline = 'middle'
     context.fillText(this.titleText, this.width / 2, this.titlePosition)
   }
 
   drawLowerText(context){
-    context.font = "30px Staatliches";
+    context.font = `30px ${this.font}`
     context.fillText(this.lowerText, this.width / 2, this.lowerTextPosition)
 
   }

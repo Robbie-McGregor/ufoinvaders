@@ -1,5 +1,5 @@
 import {images} from "../util/images.js";
-import Sprite from "../assets/sprite.js";
+import Sprite from "../sprite.js";
 
 export default class Laser extends Sprite{
   constructor({position, game}){
@@ -30,10 +30,11 @@ export default class Laser extends Sprite{
       [this.imageX, 0],
       [0,0],
     ]
-    this.growSpeed = 30
+    this.growSpeed = 1000
     this.currentFrame = 0
+
     this.frameChangeDelay = 15
-    this.currentImageOffset = 11
+    this.currentImageOffset = this.imageOffsets.length - 1
   }
 
   draw(context){

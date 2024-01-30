@@ -1,5 +1,6 @@
 import TitleScreen from "./titleScreen.js";
 import GameScreen from "./gameScreen.js";
+import GameOverScreen from "./gameOverScreen.js";
 
 export default class ScreenHandler{
   constructor(game) {
@@ -7,6 +8,7 @@ export default class ScreenHandler{
     this.screens = {
       titleScreen: new TitleScreen(game),
       gameScreen: new GameScreen(game),
+      gameOver: new GameOverScreen(game)
     }
     this.currentScreen = null
   }

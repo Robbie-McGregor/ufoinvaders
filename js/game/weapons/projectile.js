@@ -1,4 +1,4 @@
-import Sprite from "../assets/sprite.js";
+import Sprite from "../sprite.js";
 import Explosion from "../collisions/explosion.js";
 
 export default class Projectile extends Sprite{
@@ -10,15 +10,15 @@ export default class Projectile extends Sprite{
     this.game = game
     this.hitWidth = this.width
     this.hitHeight = this.height
-    this.audio = new Audio('audio/cannon_fire.ogg');
-    this.explosionAudio = new Audio('audio/DeathFlash.flac')
+    this.audio = 'audio/cannon_fire.ogg';
+    this.explosionAudio = 'audio/DeathFlash.flac'
   }
   playSound(){
-    this.audio.play()
+    this.game.audio.addAudio(this.audio)
   }
 
   playExplosion(){
-    this.explosionAudio.play()
+    this.game.audio.addAudio(this.explosionAudio)
   }
 
   update(deltaTime){

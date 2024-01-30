@@ -1,6 +1,6 @@
 import {images} from "../util/images.js";
 import { enemySetup } from "../gameSettings.js"
-import Sprite from "../assets/sprite.js";
+import Sprite from "../sprite.js";
 import Missile from "../weapons/enemyWeapons/missile.js";
 import Mine from "../weapons/enemyWeapons/mine.js";
 
@@ -9,6 +9,7 @@ export default class Enemy extends Sprite{
     missile : Missile,
     mine: Mine
   }
+  static specialEnemyPoints = 400
   constructor({ position, type = enemySetup.enemyTypes.level_1}){
     super({
       image: images.enemyGreen,
@@ -54,7 +55,6 @@ export default class Enemy extends Sprite{
   }
 
   takeLaserDamage(damage){
-    console.log(this.laserDamage)
     if(this.laserDamage >= 1){
       this.health -= 1
       this.laserDamage = 0

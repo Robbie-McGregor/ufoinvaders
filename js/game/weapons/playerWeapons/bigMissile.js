@@ -14,7 +14,7 @@ export default class BigMissile extends Projectile{
       game,
       explosionSize: 5
     })
-    this.health = 7
+    this.health = 15
     this.hitWidth = this.width * 0.55
     this.hitHeight = this.height
     this.velocity = {

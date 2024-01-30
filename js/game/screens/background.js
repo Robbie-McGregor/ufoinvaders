@@ -42,7 +42,6 @@ export default class Background{
   }
 
   draw(context){
-    context.clearRect(0, 0, this.width, this.height)
 
     context.globalAlpha = 1
 

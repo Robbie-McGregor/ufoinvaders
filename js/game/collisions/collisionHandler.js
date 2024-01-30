@@ -7,9 +7,14 @@ export default class CollisionHandler{
     this.explosionArray = []
   }
 
+  reset(){
+    this.explosionArray.splice(0, this.explosionArray.length)
+  }
+
 
   update(deltaTime){
-    this.playerMissileToEnemyCollisions()
+    this.playerMissileToEnemyCollisions(this.game.enemies.enemyArray)
+    this.playerMissileToEnemyCollisions(this.game.enemies.specialEnemyArray)
     this.ammoDropCollisions()
     this.playerEnemyCollisions()
     this.playerMissileToEnemyMissileCollisions()
@@ -30,25 +35,30 @@ export default class CollisionHandler{
     this.explosionArray.forEach(explosion => explosion.animate(deltaTime))
   }
 
-  playerMissileToEnemyCollisions(){
+  playerMissileToEnemyCollisions(enemyArray){
     this.game.weapons.missileArray.forEach(missile => {
-      this.game.enemies.enemyArray.forEach(enemy => {
+      enemyArray.forEach(enemy => {
         if(this.collisionCheckRectangular({object1: missile, object2: enemy})){
           const enemyLaser = this.game.weapons.enemyLaserArray.find(laser => laser.enemy === enemy)
           if(enemyLaser) enemyLaser.markedForDeletion = true
-
           missile.health -= 1
           if(missile.health === 0) missile.markedForDeletion = true
           enemy.health -= 1
           if(enemy.health <= 0) {
+            enemy.markedForDeletion = true
             this.explosionArray.push(new Explosion({...enemy.position}, 2))
-            if(Math.random() < 0.1) this.game.ammoDrops.addAmmoDrop({...enemy.position})
+
+            if(this.game.enemies.specialEnemyArray.includes(enemy) || (Math.random() < 0.1))
+              this.game.ammoDrops.addAmmoDrop({...enemy.position})
+          } else {
+            this.explosionArray.push(new Explosion({...missile.position}, 2))
           }
           if(missile.health <= 0 && missile.explosionSize > 2) missile.explode()
         }
       })
     })
   }
+
 
   playerMissileToEnemyMissileCollisions(){
     this.game.weapons.missileArray.forEach(missile => {
@@ -57,10 +67,12 @@ export default class CollisionHandler{
           object1: missile,
           object2: enemyMissile
         })){
+          this.game.state.missilesShotDownCount += 1
           missile.health -= 1
           enemyMissile.explode()
           enemyMissile.playExplosion()
           enemyMissile.health -= 1
+          enemyMissile.markedForDeletion = true
           setTimeout(() => {
             this.game.ammoDrops.addAmmoDrop({...enemyMissile.position})
           }, 100)
@@ -96,6 +108,7 @@ export default class CollisionHandler{
       })){
         missile.health -= 1
         this.game.player.playHit()
+        this.explosionArray.push(new Explosion({...missile.position}, 3))
         this.game.player.health -= 1
         this.game.player.invincibilityFrames()
       }
@@ -126,7 +139,6 @@ export default class CollisionHandler{
 
       this.game.weapons.missileArray.forEach(missile => {
         if(this.collisionCheckRectangular({object1: missile, object2: ammoDrop})){
-          this.explosionArray.push(new Explosion({...ammoDrop.position}, 1))
           ammoDrop.markedForDeletion = true
         }
       })

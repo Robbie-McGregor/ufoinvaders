@@ -11,10 +11,26 @@ export default class LevelHandler {
 
   update(){
     if(!this.currentLevel) return
+    if(this.game.state.gameOver) return
+
     this.currentLevel.update()
+    this.currentLevel.enemies.forEach( enemy => {
+      if(enemy.position.y + enemy.height / 2 >= this.game.height) this.game.state.gameOver = true
+    })
+
     if(this.currentLevel.levelComplete){
-      console.log(this.currentLevel)
-      this.setCurrentLevel(this.currentLevel.level)
+      this.game.state.levelsCompleted += 1
+      if(this.currentLevel.level < levels.length){
+        this.setCurrentLevel(this.currentLevel.level)
+      } else {
+        this.game.state.winGame = true
+        this.game.state.gameOver = true
+      }
+
+    }
+    if(!this.currentLevel.releasedSpecialEnemy && this.currentLevel.enemies.length <= 7){
+      this.game.enemies.addSpecialEnemy()
+      this.currentLevel.releasedSpecialEnemy = true
     }
   }
 
@@ -23,9 +39,11 @@ export default class LevelHandler {
     this.currentLevel = undefined
     this.currentLevel = new Level(levels[level])
     this.currentLevel.enemies.forEach(enemy => this.game.enemies.enemyArray.push(enemy))
+    this.game.ammoDrops.addAmmoDrop({x: 65, y: 45})
+    this.game.ammoDrops.addAmmoDrop({x: this.game.width - 65, y: 45})
 
     setTimeout(() => {
-      this.game.enemies.setEnemySpeed(0.5)
+      this.game.enemies.setEnemySpeed(this.game.enemies.enemyMaxSpeed)
     }, 500)
 
   }
@@ -42,6 +60,7 @@ class Level{
     this.enemies = []
     this.level = config.level
     this.levelComplete = false
+    this.releasedSpecialEnemy = false
 
     this.addEnemies()
   }
@@ -78,7 +97,10 @@ class Level{
 
   update(){
     this.enemies = this.enemies.filter(enemy => !enemy.markedForDeletion)
-    if(this.enemies.length === 0) this.levelComplete = true
+
+    if(this.enemies.length === 0) setTimeout(() => {
+      this.levelComplete = true
+    }, 1000)
   }
 }
 
@@ -233,6 +255,54 @@ const levels = [
       [enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5],
       [enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5],
       [enemySetup.enemyTypes.level_1, enemySetup.enemyTypes.level_1, enemySetup.enemyTypes.level_1, enemySetup.enemyTypes.level_1, enemySetup.enemyTypes.level_1, enemySetup.enemyTypes.level_1, enemySetup.enemyTypes.level_1, enemySetup.enemyTypes.level_1],
+    ]
+  },
+  {
+    level: 15,
+    enemies: [
+      [enemySetup.enemyTypes.level_6, null, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_6,  null, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_6,null],
+      [enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5],
+      [enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5],
+      [enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5],
+      [enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5],
+      [enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5],
+      [enemySetup.enemyTypes.level_2, enemySetup.enemyTypes.level_2, enemySetup.enemyTypes.level_2, enemySetup.enemyTypes.level_2, enemySetup.enemyTypes.level_2, enemySetup.enemyTypes.level_2, enemySetup.enemyTypes.level_2, enemySetup.enemyTypes.level_2],
+    ]
+  },
+  {
+    level: 16,
+    enemies: [
+      [enemySetup.enemyTypes.level_6, null, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_6,  null, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_6,null],
+      [enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5],
+      [enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5],
+      [enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5],
+      [enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5],
+      [enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5],
+      [enemySetup.enemyTypes.level_3, enemySetup.enemyTypes.level_3, enemySetup.enemyTypes.level_3, enemySetup.enemyTypes.level_3, enemySetup.enemyTypes.level_3, enemySetup.enemyTypes.level_3, enemySetup.enemyTypes.level_3, enemySetup.enemyTypes.level_3],
+    ]
+  },
+  {
+    level: 17,
+    enemies: [
+      [enemySetup.enemyTypes.level_6, null, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_6,  null, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_6,null],
+      [enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5],
+      [enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5],
+      [enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5],
+      [enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5],
+      [enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5],
+      [enemySetup.enemyTypes.level_4, enemySetup.enemyTypes.level_4, enemySetup.enemyTypes.level_4, enemySetup.enemyTypes.level_4, enemySetup.enemyTypes.level_4, enemySetup.enemyTypes.level_4, enemySetup.enemyTypes.level_4, enemySetup.enemyTypes.level_4],
+    ]
+  },
+  {
+    level: 18,
+    enemies: [
+      [enemySetup.enemyTypes.level_6, null, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_6,  null, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_6,null],
+      [enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5],
+      [enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5],
+      [enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5],
+      [enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5],
+      [enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5],
+      [enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5, enemySetup.enemyTypes.level_5],
     ]
   },
 

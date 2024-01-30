@@ -17,13 +17,16 @@
   <link rel="icon" href="/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icon.png">
 
-  <link rel="manifest" href="site.webmanifest">
   <meta name="theme-color" content="#fafafa">
 </head>
 
 <body>
   <div id="game-container">
-    <canvas id="canvas-game"></canvas>
+    <div id="loader" class="loader-container">
+      <div class="loader"></div>
+      Loading
+    </div>
+    <canvas id="canvas-game"  class="display-none"></canvas>
   </div>
 
 

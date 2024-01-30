@@ -5,7 +5,6 @@ export const settings = {
     specialEnemySpeed: 0.5,
     enemyMoveDownIncrement: 15,
     specialEnemyWhenNumberOfEnemiesLeftEquals: 6,
-    enemyMaxSpeed: 0.5,
     friction: 0.95,
     accelerationRate: 0.03,
     playerMaxLives: 3,

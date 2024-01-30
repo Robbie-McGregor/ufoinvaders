@@ -14,11 +14,15 @@ export default class AmmoDropHandler{
     this.ammoDropArray = []
   }
 
+  reset(){
+    this.ammoDropArray.splice(0,this.ammoDropArray.length)
+  }
+
   update(deltaTime){
     this.ammoDropArray.forEach(ammoDrop => {
       ammoDrop.update(deltaTime)
       if(ammoDrop.markedForDeletion) {
-        ammoDrop.playSound()
+        this.game.audio.addAudio(ammoDrop.audio)
         if(ammoDrop.ammoType === Health.ammoType) this.game.player.health += 1
         else this.game.weapons.playerAmmo[ammoDrop.ammoType] += ammoDrop.ammoQty
       }

@@ -1,4 +1,4 @@
-import Sprite from "../assets/sprite.js";
+import Sprite from "../sprite.js";
 import {images} from "../util/images.js";
 
 export default class Explosion extends Sprite{
@@ -8,7 +8,7 @@ export default class Explosion extends Sprite{
       position,
       size: {width: 50 * size, height: 50 * size}
     })
-    this.audio = new Audio('audio/DeathFlash.flac')
+    this.audio = 'audio/DeathFlash.flac'
     this.imageX = 196
     this.imageY = 190
     this.currentFrame = 0
@@ -33,8 +33,4 @@ export default class Explosion extends Sprite{
     this.totalAnimatedGameFrames ++
   }
 
-  playSound(){
-    this.audio.currentTime = 0
-    this.audio.play()
-  }
 }

@@ -1,4 +1,5 @@
 import {settings} from "../gameSettings.js";
+import Enemy from "./enemy.js";
 
 export default class EnemyHandler{
 
@@ -7,7 +8,14 @@ export default class EnemyHandler{
 
     this.enemySpeed = 0
     this.enemyArray = []
+    this.specialEnemyArray = []
+    this.enemyMaxSpeed =  0.5
+  }
 
+  reset(){
+    this.enemySpeed = 0
+    this.enemyArray.splice(0, this.enemyArray.length)
+    this.specialEnemyArray.splice(0, this.specialEnemyArray.length)
   }
 
   update(deltaTime){
@@ -15,25 +23,73 @@ export default class EnemyHandler{
     this.enemyArray.forEach(enemy => {
       enemy.update(deltaTime)
       if(enemy.markedForDeletion) {
+        this.game.state.killCount += 1
         this.game.state.score += enemy.points
         this.playEnemyDeathSound()
       }
     })
+
+    this.handleSpecialEnemy(deltaTime)
+
     this.enemyArray = this.enemyArray.filter(enemy => !enemy.markedForDeletion)
+
   }
 
+  handleSpecialEnemy(deltaTime){
+    this.specialEnemyArray.forEach(specialEnemy => {
+      specialEnemy.update(deltaTime)
+      if(specialEnemy.velocity.x > 0 && specialEnemy.position.x > this.game.width ||
+        specialEnemy.velocity.x < 0 && specialEnemy.position.x < 0) {
+        specialEnemy.markedForDeletion = true
+      }
+      if(specialEnemy.markedForDeletion) {
+        this.game.state.score += specialEnemy.points
+        this.game.state.killCount += 1
+      }
+    })
+
+    this.specialEnemyArray = this.specialEnemyArray.filter(enemy => !enemy.markedForDeletion)
+  }
+
+
+
   playEnemyDeathSound(){
-    const audio = new Audio('audio/DeathFlash.flac')
-    audio.play()
+    this.game.audio.addAudio('audio/DeathFlash.flac')
   }
 
   draw(context){
     this.enemyArray.forEach(enemy => enemy.draw(context))
+    this.specialEnemyArray.forEach(enemy => enemy.draw(context))
   }
 
   setEnemySpeed(speed){
     this.enemySpeed = speed
     this.enemyArray.forEach(enemy => enemy.velocity.x = speed)
+  }
+
+  addSpecialEnemy(){
+    const side = Math.random() - 0.5
+
+    let xPosition
+    let xVelocity
+
+
+    if(side >= 0) {
+      xPosition = -60
+      xVelocity = this.enemyMaxSpeed
+    } else {
+      xPosition = this.game.width + 60
+      xVelocity = this.enemyMaxSpeed * -1
+    }
+
+    const enemy = new Enemy({
+      position: {x: xPosition, y: 50}
+    })
+    enemy.points = Enemy.specialEnemyPoints
+    enemy.velocity.x = xVelocity
+
+    this.specialEnemyArray.push(enemy)
+
   }
 
 
@@ -81,8 +137,8 @@ export default class EnemyHandler{
 
     // Ensure enemies don't accelerate past max speed
     if(leftEnemy.position.x - leftEnemy.width / 2 > leftCutoff && rightEnemy.position.x  - rightEnemy.width / 2 < rightCutoff){
-      if(this.enemySpeed > 0) this.enemySpeed = settings.enemyMaxSpeed
-      if(this.enemySpeed < 0) this.enemySpeed = -settings.enemyMaxSpeed
+      if(this.enemySpeed > 0) this.enemySpeed = this.enemyMaxSpeed
+      if(this.enemySpeed < 0) this.enemySpeed = -this.enemyMaxSpeed
     }
 
     this.enemyArray.forEach(enemy => {

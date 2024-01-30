@@ -13,7 +13,7 @@ export default class Nuke extends Projectile{
       game,
       explosionSize: 10
     })
-    this.health = 9
+    this.health = 25
 
     this.velocity = {
       x: 0,

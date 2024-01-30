@@ -3,6 +3,7 @@ import Missile from "./playerWeapons/missile.js";
 import BigMissile from "./playerWeapons/bigMissile.js";
 import Nuke from "./playerWeapons/nuke.js";
 import PlayerLaser from "./playerWeapons/playerLaser.js";
+import {enemySetup} from "../gameSettings.js";
 
 
 export default class WeaponHandler{
@@ -14,21 +15,32 @@ export default class WeaponHandler{
 
   constructor(game) {
     this.game = game
-    this.playerAmmo = {
-      "BIG_MISSILES": 5,
-      "NUKES": 3,
-      "LASER": 750
-    }
     this.laserAmmoDepleteRate = 0.2
     this.missileArray = []
+    this.playerAmmo = {
+      "BIG_MISSILES": 0,
+      "NUKES": 0,
+      "LASER": 0
+    }
     this.playerLaser = new PlayerLaser(game)
-
     this.enemyMissileArray = []
     this.enemyLaserArray = []
     this.enemyShootMissileChance = .0075
     this.enemiesShootLaserChance =  0.0075 / 4
     this.maxSimultaneousEnemyMissileAttacks = 5
     this.maxSimultaneousEnemyLaserAttacks = 2
+
+    this.reset()
+  }
+
+  reset(){
+    this.playerAmmo.BIG_MISSILES = 5
+    this.playerAmmo.NUKES = 5
+    this.playerAmmo.LASER = 1000
+    this.enemyLaserArray.splice(0, this.enemyLaserArray.length)
+    this.enemyMissileArray.splice(0, this.enemyMissileArray.length)
+    this.missileArray.splice(0, this.missileArray.length)
+    this.playerLaser.height = 0
   }
 
 
@@ -73,7 +85,7 @@ cleanUp(){
   handlePlayerInput(deltaTime){
     // Laser
     if(this.game.input.currentKeysWeapons[0] === this.game.input.keyMapWeapons.fireLaser && this.playerAmmo.LASER > 0){
-      this.playerLaser.height += this.playerLaser.distanceToGrow / (this.playerLaser.growSpeed * deltaTime)
+      this.playerLaser.height += (this.playerLaser.distanceToGrow / this.playerLaser.growSpeed) * deltaTime
       this.playerAmmo.LASER -= this.laserAmmoDepleteRate * (deltaTime)
       if(this.playerAmmo.LASER < 0) this.playerAmmo.LASER = 0
       return
@@ -127,16 +139,26 @@ cleanUp(){
     if(Math.random() > this.enemiesShootLaserChance) return
     if(this.game.enemies.enemyArray.length < 1) return
 
+    // Only Enemies on bottom row can fire the laser
     let enemiesThatCanFireLaserArray = this.game.enemies.getBottomRowEnemies()
+    enemiesThatCanFireLaserArray = enemiesThatCanFireLaserArray.filter(enemy =>  enemy.type !== enemySetup.enemyTypes.level_6)
+    // Filter out enemies that are already firing a laser
+    this.enemyLaserArray.forEach(laser => {
+      if (enemiesThatCanFireLaserArray.includes(laser.enemy)) enemiesThatCanFireLaserArray.splice(enemiesThatCanFireLaserArray.indexOf(laser.enemy), 1)
+    })
+
 
     const randomIndex = Math.floor((Math.random() * enemiesThatCanFireLaserArray.length ))
     let enemy = enemiesThatCanFireLaserArray[randomIndex]
+    if(enemy){
+      this.enemyLaserArray.push(new EnemyLaser({
+        position: enemy.position,
+        game: this.game,
+        enemy: enemy
+      }))
+    }
 
-    this.enemyLaserArray.push(new EnemyLaser({
-      position: enemy.position,
-      game: this.game,
-      enemy: enemy
-    }))
+
   }
 
 }

@@ -1,4 +1,5 @@
 import {images} from "../util/images.js";
+import {numberWithCommas} from "../util/util.js";
 
 export default class Overlay{
     constructor(game){
@@ -85,7 +86,8 @@ export default class Overlay{
         context.fillStyle = 'white'
         const x = this.game.width / 2
         context.font = `40px ${this.font}`;
-        context.fillText(`SCORE ${this.game.state.score}`, x, y);
+
+        context.fillText(`SCORE ${numberWithCommas(this.game.state.score)}`, x, y);
         this.setFont(context)
     }
 

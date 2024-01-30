@@ -5,7 +5,7 @@ export default class PlayerLaser extends Laser{
     super({position: game.player.position, game})
     this.player = game.player
     this.hitWidth = 7
-    this.damageDealt = 0.0125
+    this.damageDealt = 0.015
     this.distanceToGrow = game.height - 125
   }
 
@@ -13,6 +13,7 @@ export default class PlayerLaser extends Laser{
   update(deltaTime){
     super.update(deltaTime)
     if(this.height > this.distanceToGrow) this.height = this.distanceToGrow
+
   }
 
   draw(context){

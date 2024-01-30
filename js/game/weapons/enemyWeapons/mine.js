@@ -21,6 +21,8 @@ export default class Mine extends Projectile{
           y: 0.5
       }
       this.speed = 0.4
+      this.maxHorizontalSpeed = 0.35
+      this.minimumVerticalSpeed = 0.35
       this.position = position
       this.image = images.mine
       this.player = game.player
@@ -40,12 +42,16 @@ export default class Mine extends Projectile{
 
     update(deltaTime){
       super.update(deltaTime)
-      if(this.position.y < this.game.height / 1.3){
+      // if(this.position.y < this.game.height / 1.3){
+      if(this.position.y < this.game.height - this.game.player.height*2){
           this.setHomingCoordinates()
           this.getNewVelocity()
       }
       this.homingCoordinates.angle = this.getAngleToPlayer()
       if(this.position.y >= this.game.height) this.markedForDeletion = true
+
+      if(this.position.x < this.game.player.width + this.width / 2) this.velocity.x = 0
+      if(this.position.x > this.game.width - this.game.player.width - this.width / 2) this.velocity.x = 0
     }
 
     setHomingCoordinates(){
@@ -57,11 +63,6 @@ export default class Mine extends Projectile{
         }
     }
 
-    playSound(){
-        this.audio.play()
-    }
-
-
     getAngleToPlayer(){
       const opposite = this.homingCoordinates.playerPosition.x - this.homingCoordinates.missilePosition.x
       const adjacent = this.homingCoordinates.playerPosition.y - this.homingCoordinates.missilePosition.y
@@ -70,9 +71,18 @@ export default class Mine extends Projectile{
 
     getNewVelocity(){
       const angle  = this.getAngleToPlayer()
-      const deltaX = Math.sin(angle) * this.speed
-      const deltaY = Math.cos(angle) * this.speed
-        this.velocity = {
+      let deltaX = Math.sin(angle) * this.speed
+      let deltaY = Math.cos(angle) * this.speed
+
+      if(deltaX > this.maxHorizontalSpeed) deltaX = this.maxHorizontalSpeed
+      else if(deltaX < -this.maxHorizontalSpeed) deltaX = -this.maxHorizontalSpeed
+
+
+      if(deltaY < this.minimumVerticalSpeed) deltaY = this.minimumVerticalSpeed
+
+
+
+      this.velocity = {
             ...this.velocity,
             x: deltaX,
             y: deltaY

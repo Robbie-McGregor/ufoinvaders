@@ -4,6 +4,12 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: 'Staatliches',sans-serif;
+  --loader-color: #dadada
+}
+
+body{
+  background: rgba(2, 2, 2, 0.97);
 }
 
 
@@ -12,20 +18,40 @@
   height: 100vh;
   /*overflow: hidden;*/
   position: relative;
-  background: rgba(2, 2, 2, 0.97);
-  color: #727272;
+  background: rgba(33, 33, 33, 0.97);
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
+.display-none{
+  display: none !important;
+}
+
 #canvas-game{
   max-width: 100vw;
   max-height: 100vh;
+
 }
 
 #title-screen img{
   width: 250px;
 }
 
+.loader-container{
+  text-align: center;
+  font-size: 28px;
+  letter-spacing: 3px;
+  color: var(--loader-color);
+}
 
+.loader {
+  width: 150px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 10px solid;
+  border-color: var(--loader-color) #0000;
+  animation: l1 1s infinite;
+  margin-bottom: 50px;
+}
+@keyframes l1 {to{transform: rotate(.5turn)}}

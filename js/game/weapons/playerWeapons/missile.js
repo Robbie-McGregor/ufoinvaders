@@ -21,6 +21,5 @@ export default class Missile extends Projectile{
       x: 0,
       y: -1.4
     }
-    this.audio = new Audio('audio/cannon_fire.ogg');
   }
 }

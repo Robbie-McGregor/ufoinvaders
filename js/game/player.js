@@ -1,5 +1,5 @@
-import {images} from "../util/images.js";
-import {settings} from "../gameSettings.js";
+import {images} from "./util/images.js";
+import {settings} from "./gameSettings.js";
 import Sprite from "./sprite.js";
 
 export default class Player extends Sprite{
@@ -16,7 +16,8 @@ export default class Player extends Sprite{
       this.regularImage = images.player
       this.ghostImage = images.playerOverlay
       this.isAlive = true
-      this.health = 3
+      this.startHealth = 3
+      this.health = this.startHealth
       this.maxHealth = 5
       this.radius = this.width/2.25
       this.hitWidth = this.width * 0.9
@@ -25,6 +26,10 @@ export default class Player extends Sprite{
       this.maxSpeed = 1
       this.accelerationRate = settings.accelerationRate
       this.invincibility = false
+    }
+
+    reset(){
+      this.health = this.startHealth
     }
 
 
@@ -44,8 +49,7 @@ export default class Player extends Sprite{
      }
 
      playHit(){
-      const audio = new Audio('audio/DeathFlash.flac')
-       audio.play()
+      this.game.audio.addAudio('audio/DeathFlash.flac')
      }
 
 

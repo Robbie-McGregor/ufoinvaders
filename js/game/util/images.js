@@ -18,7 +18,7 @@ export const images = {
   enemyLightBlue: createImage(`${IMAGE_LOCATION}enemies/enemy_light_blue.png`),
 
   // OTHER
-  player: createImage(`${IMAGE_LOCATION}other/Player.Png`),
+  player: createImage(`${IMAGE_LOCATION}other/player.png`),
   explosion: createImage(`${IMAGE_LOCATION}other/explosion.png`),
   ammoBox: createImage(`${IMAGE_LOCATION}other/crate.png`),
   heart: createImage(`${IMAGE_LOCATION}other/heart.png`),
